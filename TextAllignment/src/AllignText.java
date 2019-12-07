@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 public class AllignText {
 	
 	public static int lineLength = 80;
+	public static final int mode = 1;
 
 	
 	public static void main(String[] args) {	
@@ -39,26 +40,77 @@ public class AllignText {
 	public void alignParagraph(String paragraph) {
 		String[] words = tokenizeParagraph(paragraph);
 		int[] wordsLength = calculateWordLengths(words);
-		int indexStart = 0, indexEnd = 0, countCharacters = 0;
 		
-		while (indexEnd < words.length - 1) {
-			countCharacters = 0;
-			indexEnd++;
-			countCharacters += wordsLength[indexStart];
+		if (0 == mode) {
+			int indexStart = 0, indexEnd = 0, countCharacters = 0;
 			
-			while (countCharacters <= lineLength && indexEnd <= words.length - 1) {
-				countCharacters += wordsLength[indexEnd++] + 1;
-			}
-			if (countCharacters > lineLength && indexEnd > indexStart + 1) {
+			while (indexEnd < words.length - 1) {
+				countCharacters = 0;
+				indexEnd++;
+				countCharacters += wordsLength[indexStart];
+				
+				while (countCharacters <= lineLength && indexEnd <= words.length - 1) {
+					countCharacters += wordsLength[indexEnd++] + 1;
+				}
+				if (countCharacters > lineLength && indexEnd > indexStart + 1) {
+					indexEnd--;
+					countCharacters -= wordsLength[indexEnd] + 1;
+				}
 				indexEnd--;
-				countCharacters -= wordsLength[indexEnd] + 1;
+				int spacesForFilling = lineLength - countCharacters;
+				
+				printRightAligned(words, indexStart, indexEnd, spacesForFilling);
+				indexEnd++;
+				indexStart = indexEnd;
 			}
-			indexEnd--;
-			int spacesForFilling = lineLength - countCharacters;
-			
-			printRightAligned(words, indexStart, indexEnd, spacesForFilling);
-			indexEnd++;
-			indexStart = indexEnd;
+		} else if (1 == mode) {
+			boolean lastWord = false, firstLoop = false;
+			int countCharacters = 0, spacesToFill = lineLength, flag = 0;
+			String wordsToPrint = "";
+			String spacesToPrint = "";
+			for (int i = 0; i < words.length; i++) {
+				firstLoop = false;
+				//System.out.println(words[i] + " cnt " + (countCharacters) + " cntA " + (countCharacters + 1 + wordsLength[i]));
+				if (((countCharacters + 1 + wordsLength[i]) <= lineLength)) {
+					firstLoop = true;
+					//System.out.println(words[i] + " cnt " + (countCharacters));
+					wordsToPrint += words[i] + " ";
+					//System.out.println(wordsToPrint);
+					countCharacters += wordsLength[i] + 1;
+					if (i == words.length - 1) {
+						lastWord = true;
+					}
+				} else {
+					flag = 1;
+				}
+				if (((countCharacters + 1 + wordsLength[i]) > lineLength) || true == lastWord || words[i].length() > lineLength){
+					if (words[i].length() + 1 > lineLength && countCharacters == 0) {
+						countCharacters = lineLength;
+					}
+					lastWord = false;
+					if (words[i].length() + 1 <= lineLength) {
+						firstLoop = true;
+					}
+					spacesToFill = lineLength - countCharacters;
+					for (int j = 0; j < spacesToFill; j++) {
+						spacesToPrint += " ";
+					}
+					if (wordsLength[i] > lineLength) {
+						wordsToPrint += "\n" + words[i];
+						
+					}
+					if (i != words.length - 1 && firstLoop == true && flag == 1) {
+						i--;
+					}
+					flag = 0;
+					
+					printRightAlignedMode1(spacesToPrint, wordsToPrint);
+
+					
+					wordsToPrint = spacesToPrint = "";
+					spacesToFill = lineLength; countCharacters = 0;
+				}
+			}
 		}
 //		int len = strArr.length();
 //		int cnt = 0;
@@ -112,6 +164,9 @@ public class AllignText {
 		System.out.println();
 	}
 
+	private void printRightAlignedMode1(String spaces, String words) {
+		System.out.println(spaces + words);
+	}
 
 	private int[] calculateWordLengths(String[] words) {
 		int[] wordLengths = new int[words.length];
