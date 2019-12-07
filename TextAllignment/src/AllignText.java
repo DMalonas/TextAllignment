@@ -19,7 +19,11 @@ import java.util.StringTokenizer;
  * 50
  */
 
+
 public class AllignText {
+	
+	public static int lineLength = 80;
+
 	
 	public static void main(String[] args) {	
 		if (args.length != 2) {
@@ -27,7 +31,7 @@ public class AllignText {
 		}
 		AllignText at = new AllignText();
 		String[] paragraphs = FileUtil.readFile(args[0]);
-		int length = Integer.parseInt(args[1]);			
+		int lineLength = Integer.parseInt(args[1]);			
 		at.alignParagraph(paragraphs[0]);
 	}
 	
@@ -35,6 +39,13 @@ public class AllignText {
 	public void alignParagraph(String paragraph) {
 		String[] words = tokenizeParagraph(paragraph);
 		int[] wordsLength = calculateWordLengths(words);
+		int indexStart = 0, indexEnd = 0, countCharacters = 0;
+		
+		indexEnd = 1;
+		countCharacters = wordsLength[indexStart];
+		while (countCharacters <= lineLength && indexEnd < words.length - 1) {
+			
+		}
 //		int len = strArr.length();
 //		int cnt = 0;
 //		for (int i = 0; i < len; i++) {
@@ -77,8 +88,12 @@ public class AllignText {
 
 
 	private int[] calculateWordLengths(String[] words) {
-		// TODO Auto-generated method stub
-		return null;
+		int[] wordLengths = new int[words.length];
+		
+		for (int i = 0; i < wordLengths.length; i++) {
+			wordLengths[i] = words[i].length();
+		}
+		return wordLengths;
 	}
 
 

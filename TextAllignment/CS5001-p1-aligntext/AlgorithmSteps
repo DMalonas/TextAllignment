@@ -1,0 +1,14 @@
+Algorithm steps
+ 	1)Right number of command line arguments has been provided:
+ 		No:
+		Terminate.
+		
+ 		Yes:
+		2)Read text into String.
+		3)Read line length.
+		4)Tokenize String.
+		5)Find length of each token.
+		While tokens left:
+			6)Calculate number of tokens per line
+			7)Calculate number of spaces to add on the left side of each line
+			7)Print right-aligned line
