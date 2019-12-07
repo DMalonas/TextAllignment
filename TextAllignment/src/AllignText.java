@@ -41,10 +41,24 @@ public class AllignText {
 		int[] wordsLength = calculateWordLengths(words);
 		int indexStart = 0, indexEnd = 0, countCharacters = 0;
 		
-		indexEnd = 1;
-		countCharacters = wordsLength[indexStart];
-		while (countCharacters <= lineLength && indexEnd < words.length - 1) {
+		while (indexEnd < words.length - 1) {
+			countCharacters = 0;
+			indexEnd++;
+			countCharacters += wordsLength[indexStart];
 			
+			while (countCharacters <= lineLength && indexEnd <= words.length - 1) {
+				countCharacters += wordsLength[indexEnd++] + 1;
+			}
+			if (countCharacters > lineLength && indexEnd > indexStart + 1) {
+				indexEnd--;
+				countCharacters -= wordsLength[indexEnd] + 1;
+			}
+			indexEnd--;
+			int spacesForFilling = lineLength - countCharacters;
+			
+			printRightAligned(words, indexStart, indexEnd, spacesForFilling);
+			indexEnd++;
+			indexStart = indexEnd;
 		}
 //		int len = strArr.length();
 //		int cnt = 0;
@@ -84,6 +98,18 @@ public class AllignText {
 //			}
 //			System.out.print(strArr.charAt(i));
 //		}
+	}
+
+
+	private void printRightAligned(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
+		for (int i = 0; i < spacesForFilling; i++) {
+			System.out.print(" ");
+		}
+		for (int i = indexStart; i < indexEnd; i++) {
+			System.out.print(words[i] + " ");
+		}
+		System.out.print(words[indexEnd]);
+		System.out.println();
 	}
 
 
