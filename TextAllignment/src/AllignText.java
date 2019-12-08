@@ -23,8 +23,8 @@ import java.util.StringTokenizer;
 public class AllignText {
 	
 	public static int lineLength = 80;
-	public static final int mode = 1;
-
+	public static final int mode = 0;
+	char alignType = 'J';
 	
 	public static void main(String[] args) {	
 		if (args.length != 2) {
@@ -59,7 +59,13 @@ public class AllignText {
 				indexEnd--;
 				int spacesForFilling = lineLength - countCharacters;
 				
-				printRightAligned(words, indexStart, indexEnd, spacesForFilling);
+				if (alignType == 'R') {
+					printRightAligned(words, indexStart, indexEnd, spacesForFilling);
+				} else if ('L' == alignType) {
+					printLeftAligned(words, indexStart, indexEnd, spacesForFilling);
+				} else if ('J' == alignType) {
+					printJustifiedLine(words, indexStart, indexEnd, spacesForFilling);
+				}
 				indexEnd++;
 				indexStart = indexEnd;
 			}
@@ -168,6 +174,45 @@ public class AllignText {
 		System.out.println(spaces + words);
 	}
 
+	
+	private void printLeftAligned(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
+		for (int i = indexStart; i < indexEnd; i++) {
+			System.out.print(words[i] + " ");
+		}
+		System.out.print(words[indexEnd]);
+		
+		for (int i = 0; i < spacesForFilling; i++) {
+			System.out.print(" ");
+		}
+		System.out.println();
+	}
+	
+	public void printJustifiedLine(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
+		//Count num of gaps between the words
+		int gaps = indexEnd - indexStart;
+		//Recalculate spaces for filling including gaps between words
+		spacesForFilling += gaps;
+		int spacesPerGapMinimum = 0, timesExtraSpacesNeeded = 0;
+		//Avoid division by zero
+		if (gaps > 0) {
+			//Check spaces per gap minimum
+			spacesPerGapMinimum = spacesForFilling / gaps;
+			//Check how many times an extra space needs to be added
+			timesExtraSpacesNeeded = spacesForFilling % gaps;
+		}
+		//Print each word followed by the minimum number of spaces needed, followed by an extra space when needed (extra spaces added on the right of the line)
+		for (int i = indexStart; i < indexEnd; i++) {
+			System.out.print(words[i]);
+			for (int j = 0; j < spacesPerGapMinimum; j++) {
+				System.out.print(" ");
+			}
+			if (indexEnd - 1 - i < timesExtraSpacesNeeded) {
+				System.out.print(" ");
+			}
+		}
+		System.out.println(words[indexEnd]);
+	}
+	
 	private int[] calculateWordLengths(String[] words) {
 		int[] wordLengths = new int[words.length];
 		
