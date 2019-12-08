@@ -24,7 +24,7 @@ public class AllignText {
 	
 	public static int lineLength = 80;
 	public static final int mode = 0;
-	char alignType = 'J';
+	char alignType = 'C';
 	
 	public static void main(String[] args) {	
 		if (args.length != 2) {
@@ -65,6 +65,8 @@ public class AllignText {
 					printLeftAligned(words, indexStart, indexEnd, spacesForFilling);
 				} else if ('J' == alignType) {
 					printJustifiedLine(words, indexStart, indexEnd, spacesForFilling);
+				} else if ('C' == alignType) {
+					printCenterAlignedLine(words, indexStart, indexEnd, spacesForFilling);
 				}
 				indexEnd++;
 				indexStart = indexEnd;
@@ -211,6 +213,23 @@ public class AllignText {
 			}
 		}
 		System.out.println(words[indexEnd]);
+	}
+	
+	public void printCenterAlignedLine(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
+		for (int i = 0; i < spacesForFilling / 2; i++) {
+			System.out.print(" ");
+		}
+		if (spacesForFilling % 2 == 1) {
+			System.out.print(" ");
+		}
+		for (int i = indexStart; i < indexEnd; i++) {
+			System.out.print(words[i] + " ");
+		}
+		System.out.print(words[indexEnd]);
+		for (int i = 0; i < spacesForFilling / 2; i++) {
+			System.out.print(" ");
+		}
+		System.out.println();
 	}
 	
 	private int[] calculateWordLengths(String[] words) {
