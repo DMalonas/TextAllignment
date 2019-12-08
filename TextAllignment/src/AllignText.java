@@ -22,22 +22,67 @@ import java.util.StringTokenizer;
 
 public class AllignText {
 	
-	public static int lineLength = 80;
-	public static final int mode = 0;
-	char alignType = 'C';
+	private static int lineLength;
+	private static String[] paragraphs;
+
+
+	private static final int TWO_ARGS = 2;
+	private static final int THREE_ARGS = 3;
+	private static final int ZERO_ARGS = 0;
+	private static final int mode = 0;
 	
-	public static void main(String[] args) {	
-		if (args.length != 2) {
-			System.out.println("java AlignText file_name line_length ");
-		}
+	
+	public static void main(String[] args) {
 		AllignText at = new AllignText();
-		String[] paragraphs = FileUtil.readFile(args[0]);
-		int lineLength = Integer.parseInt(args[1]);			
-		at.alignParagraph(paragraphs[0]);
+		boolean correctInput = false;
+		char alignType = 'R';
+		
+		try {
+			if (args.length != TWO_ARGS && args.length != THREE_ARGS || Integer.parseInt(args[1]) < ZERO_ARGS) {
+				System.out.println("usage: java AlignText file_name line_length <align_mode>");
+			} else {
+				paragraphs = FileUtil.readFile(args[0]);
+				at.setLineLength(Integer.parseInt(args[1]));
+				correctInput = true;
+				
+				if (args.length == THREE_ARGS) {
+					if (args[2].equals("L")) {
+						alignType = 'L';
+					} else if (args[2].equals("R")) {
+						alignType = 'R';
+					} else if  (args[2].equals("C")) {
+						alignType = 'C';
+					} else if  (args[2].equals("J")) { 
+						alignType = 'J';
+					} else {
+						System.out.println("usage: java AlignText file_name line_length <align_mode>");
+						correctInput = false;
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("usage: java AlignText file_name line_length <align_mode>");
+		}
+		if (correctInput) {
+			for (int i = 0; i < paragraphs.length; i++) {
+				at.alignParagraph(paragraphs[i], alignType);
+			}
+		}
 	}
 	
 	
-	public void alignParagraph(String paragraph) {
+	public static int getLineLength() {
+		return lineLength;
+	}
+
+
+
+
+	public static void setLineLength(int lineLength) {
+		AllignText.lineLength = lineLength;
+	}	
+	
+	public void alignParagraph(String paragraph, char alignType) {
 		String[] words = tokenizeParagraph(paragraph);
 		int[] wordsLength = calculateWordLengths(words);
 		
@@ -161,7 +206,7 @@ public class AllignText {
 	}
 
 
-	private void printRightAligned(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
+	public void printRightAligned(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
 		for (int i = 0; i < spacesForFilling; i++) {
 			System.out.print(" ");
 		}
@@ -172,12 +217,12 @@ public class AllignText {
 		System.out.println();
 	}
 
-	private void printRightAlignedMode1(String spaces, String words) {
+	public void printRightAlignedMode1(String spaces, String words) {
 		System.out.println(spaces + words);
 	}
 
 	
-	private void printLeftAligned(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
+	public void printLeftAligned(String[] words, int indexStart, int indexEnd, int spacesForFilling) {
 		for (int i = indexStart; i < indexEnd; i++) {
 			System.out.print(words[i] + " ");
 		}
@@ -232,7 +277,7 @@ public class AllignText {
 		System.out.println();
 	}
 	
-	private int[] calculateWordLengths(String[] words) {
+	public int[] calculateWordLengths(String[] words) {
 		int[] wordLengths = new int[words.length];
 		
 		for (int i = 0; i < wordLengths.length; i++) {
@@ -242,7 +287,7 @@ public class AllignText {
 	}
 
 
-	private String[] tokenizeParagraph(String paragraph) {
+	public String[] tokenizeParagraph(String paragraph) {
 		// TODO Auto-generated method stub
 	   StringTokenizer st = new StringTokenizer(paragraph," ");
 	   String[] words = new String[st.countTokens()];
